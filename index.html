@@ -3,8 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>
-</title>
+
+<!-- REMOVE LINK PREVIEW SUBTEXT -->
+<title></title>
+<meta name="description" content="">
+<meta property="og:title" content="">
+<meta property="og:description" content="">
+<meta property="og:image" content="">
+<meta property="og:type" content="website">
 
 <style>
 * {
@@ -60,7 +66,7 @@ body {
     backdrop-filter: blur(10px);
     box-shadow: 0 0 40px rgba(255,105,180,0.4);
     z-index: 5;
-    position: relative; /* IMPORTANT */
+    position: relative;
 }
 
 /* Content */
@@ -79,7 +85,7 @@ h1 {
 .buttons {
     margin-top: 30px;
     height: 140px;
-    position: relative; /* IMPORTANT */
+    position: relative;
 }
 
 button {
@@ -148,7 +154,6 @@ button {
 <div class="moon"></div>
 
 <script>
-/* Stars */
 for (let i = 0; i < 80; i++) {
     const star = document.createElement("div");
     star.className = "star";
@@ -184,7 +189,6 @@ const message = document.getElementById("message");
 const music = document.getElementById("music");
 const box = document.getElementById("buttonBox");
 
-/* NO button dodges but stays inside the box */
 function dodgeNo(e) {
     const btnRect = noBtn.getBoundingClientRect();
     const boxRect = box.getBoundingClientRect();
@@ -200,25 +204,15 @@ function dodgeNo(e) {
     const dy = centerY - y;
     const distance = Math.hypot(dx, dy);
 
-    const triggerDistance = 90;
-    const moveAmount = 35;
-
-    if (distance < triggerDistance) {
-        const moveX = (dx / distance) * moveAmount;
-        const moveY = (dy / distance) * moveAmount;
+    if (distance < 90) {
+        const moveX = (dx / distance) * 35;
+        const moveY = (dy / distance) * 35;
 
         let newLeft = noBtn.offsetLeft + moveX;
         let newTop  = noBtn.offsetTop  + moveY;
 
-        /* Clamp inside button box */
-        newLeft = Math.max(
-            0,
-            Math.min(box.clientWidth - btnRect.width, newLeft)
-        );
-        newTop = Math.max(
-            0,
-            Math.min(box.clientHeight - btnRect.height, newTop)
-        );
+        newLeft = Math.max(0, Math.min(box.clientWidth - btnRect.width, newLeft));
+        newTop  = Math.max(0, Math.min(box.clientHeight - btnRect.height, newTop));
 
         noBtn.style.left = newLeft + "px";
         noBtn.style.top  = newTop  + "px";
@@ -228,7 +222,6 @@ function dodgeNo(e) {
 document.addEventListener("mousemove", dodgeNo);
 document.addEventListener("touchmove", dodgeNo);
 
-/* YES button celebration */
 yesBtn.addEventListener("click", () => {
     music.play();
     yesBtn.style.display = "none";
@@ -245,7 +238,6 @@ yesBtn.addEventListener("click", () => {
     }
 });
 
-/* Floating hearts */
 setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart";
@@ -258,5 +250,7 @@ setInterval(() => {
 
 </body>
 </html>
+
+
 
 
