@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Be My Valentine 💖</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0b132b, #1c2541, #3a506b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Moon */
+.moon {
+    position: absolute;
+    top: 50px;
+    right: 60px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff, #ddd);
+    box-shadow: 0 0 35px rgba(255,255,255,0.8);
+}
+
+/* Stars */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    50% { opacity: 0.3; }
+}
+
+/* Card */
+.container {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(0,0,0,0.6);
+    padding: 30px 20px;
+    border-radius: 25px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(255,105,180,0.4);
+    z-index: 5;
+    position: relative; /* IMPORTANT */
+}
+
+/* Content */
+.characters {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #ff8fab;
+    margin: 15px 0;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 30px;
+    height: 140px;
+    position: relative; /* IMPORTANT */
+}
+
+button {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+}
+
+#yesBtn {
+    background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+    color: white;
+    left: 50%;
+    transform: translateX(-110%);
+}
+
+#noBtn {
+    background: #495057;
+    color: white;
+    left: 50%;
+    top: 0;
+    transform: translateX(10%);
+    transition: left 0.25s ease, top 0.25s ease;
+}
+
+/* Message */
+.message {
+    display: none;
+    margin-top: 25px;
+    font-size: 1.4rem;
+    color: #ffb3c6;
+}
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    font-size: 22px;
+    animation: float 6s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+/* Confetti */
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="moon"></div>
+
+<script>
+/* Stars */
+for (let i = 0; i < 80; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.top = Math.random() * 100 + "vh";
+    document.body.appendChild(star);
+}
+</script>
+
+<audio id="music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5f8b78b9d5.mp3">
+</audio>
+
+<div class="container" id="card">
+    <div class="characters">🐻‍❄️ 🤝 🐰</div>
+    <h1>Will you be my Valentine?</h1>
+
+    <div class="buttons" id="buttonBox">
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="message" id="message">
+        💖 I knew you’d say YES 💖<br>
+        Let’s go under the stars 🌙✨
+    </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("message");
+const music = document.getElementById("music");
+const box = document.getElementById("buttonBox");
+
+/* NO button dodges but stays inside the box */
+function dodgeNo(e) {
+    const btnRect = noBtn.getBoundingClientRect();
+    const boxRect = box.getBoundingClientRect();
+
+    const x = e.clientX || (e.touches && e.touches[0].clientX);
+    const y = e.clientY || (e.touches && e.touches[0].clientY);
+    if (!x || !y) return;
+
+    const centerX = btnRect.left + btnRect.width / 2;
+    const centerY = btnRect.top + btnRect.height / 2;
+
+    const dx = centerX - x;
+    const dy = centerY - y;
+    const distance = Math.hypot(dx, dy);
+
+    const triggerDistance = 90;
+    const moveAmount = 35;
+
+    if (distance < triggerDistance) {
+        const moveX = (dx / distance) * moveAmount;
+        const moveY = (dy / distance) * moveAmount;
+
+        let newLeft = noBtn.offsetLeft + moveX;
+        let newTop  = noBtn.offsetTop  + moveY;
+
+        /* Clamp inside button box */
+        newLeft = Math.max(
+            0,
+            Math.min(box.clientWidth - btnRect.width, newLeft)
+        );
+        newTop = Math.max(
+            0,
+            Math.min(box.clientHeight - btnRect.height, newTop)
+        );
+
+        noBtn.style.left = newLeft + "px";
+        noBtn.style.top  = newTop  + "px";
+    }
+}
+
+document.addEventListener("mousemove", dodgeNo);
+document.addEventListener("touchmove", dodgeNo);
+
+/* YES button celebration */
+yesBtn.addEventListener("click", () => {
+    music.play();
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+    message.style.display = "block";
+
+    for (let i = 0; i < 120; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.backgroundColor = `hsl(${Math.random()*360},100%,70%)`;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+    }
+});
+
+/* Floating hearts */
+setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = "💖";
+    h.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 7000);
+}, 500);
+</script>
+
+</body>
+</html>
+
